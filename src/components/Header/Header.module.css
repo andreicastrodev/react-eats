@@ -1,0 +1,147 @@
+.header {
+  grid-column: full-start / full-end;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2rem;
+}
+
+.headerTitle {
+  font-size: 5rem;
+  font-style: italic;
+  flex: 0 0 20%;
+}
+
+.headerForm {
+  background-color: #fff;
+  border-radius: 10rem;
+  display: flex;
+  align-items: center;
+  padding-left: 3rem;
+  transition: all 0.3s;
+  flex: 0 0 60%;
+  justify-content: center;
+}
+
+.headerInput {
+  border: none;
+  background: none;
+  font-family: inherit;
+  color: inherit;
+  font-size: 1.7rem;
+  width: 30rem;
+  outline: none;
+}
+
+.headerBtn {
+  padding: 1.3rem 3rem;
+  font-size: 1.4rem;
+  border-radius: 5rem;
+  outline: none;
+  border: none;
+}
+
+.headerFns {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  flex: 0 0 20%;
+  list-style: none;
+}
+
+.headerMode,
+.headerBookmark {
+  height: 4.7rem;
+  cursor: pointer;
+}
+
+.headerBookmarks:hover,
+.heaverBookmarkBtn:hover + .headerBookmarks {
+  visibility: visible;
+  opacity: 1;
+}
+
+.header button {
+  outline: none;
+  border: none;
+  background-color: transparent;
+  display: flex;
+  align-items: center;
+  font-size: 1.7rem;
+  text-transform: uppercase;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.headerBookmarks {
+  padding: 1rem 0;
+  position: absolute;
+  right: -2.5rem;
+  top: 9rem;
+  z-index: 10;
+  width: 40rem;
+  background-color: #fff;
+  box-shadow: 0 0.8rem 5rem 2rem rgb(97 85 81 / 10%);
+  visibility: hidden;
+  opacity: 0;
+  transition: all 0.5s 0.2s;
+}
+
+.headerBookmarksList {
+  list-style: none;
+}
+
+.headerBookmarksPreview {
+}
+
+.headerPreviewLink:link,
+.headerPreviewLink:active,
+.headerPreviewLink:visited {
+  display: flex;
+  align-items: center;
+  padding: 1.5rem 3.25rem;
+  transition: all 0.3s;
+  border-right: 1px solid #fff;
+  text-decoration: none;
+}
+
+.headerPreviewLink:hover {
+  background-color: #f9f5f3;
+}
+
+.headerFigure {
+  flex: 0 0 5.8rem;
+  border-radius: 50%;
+  overflow: hidden;
+  height: 5.8rem;
+  margin-right: 2rem;
+  position: relative;
+  backface-visibility: hidden;
+}
+
+.headerImg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: all 0.3s;
+}
+
+.headerData {
+  display: flex;
+  align-items: start;
+  flex-direction: column;
+}
+
+.headerDataTitle {
+  text-transform: uppercase;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: black;
+}
+
+.headerDataPublisher {
+  font-size: 1.3rem;
+  color: #918581;
+}
