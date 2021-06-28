@@ -1,18 +1,57 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./Header.module.css";
 import { ReactComponent as HeaderMode } from "../../misc/svg/mode.svg";
 import { ReactComponent as HeaderBookmark } from "../../misc/svg/bookmark.svg";
+import { useDispatch, useSelector } from "react-redux";
+import { recipesActions } from "../../store/recipes-slice";
+
+let stopOnStart = true;
+
 const Header = () => {
+
+  const [searchedItem, setSearchedItem] = useState('')
+
   const image = require("../../misc/img/pasta.jpg").default;
+  const dispatch = useDispatch()
+
+
+
+  const formSubmitHandler = (e) => {
+    e.preventDefault()
+    const getData = async () => {
+      try {
+        const RES = await fetch(`https://forkify-api.herokuapp.com/api/search?q=${searchedItem}`)
+        console.log(RES)
+        if (!RES.ok) {
+          throw new Error('Something went wrong')
+        }
+        const data = await RES.json();
+        dispatch(recipesActions.addRecipe({ payload: data }))
+      } catch (error) {
+        console.error(error)
+      }
+    }
+
+    if (stopOnStart) return
+    getData()
+  }
+
+  const searchHandler = (e) => {
+    setSearchedItem(e.target.value)
+    stopOnStart = false
+  }
+
 
   return (
     <div className={styles.header}>
       <h1 className={styles.headerTitle}>Eatsys</h1>
-      <form className={styles.headerForm}>
+      <form onSubmit={formSubmitHandler} className={styles.headerForm}>
         <input
+          value={searchedItem}
           className={styles.headerInput}
           type="text"
           placeholder="Search recipes now!"
+          onChange={searchHandler}
         />
         <button className={styles.headerBtn}>Search</button>
       </form>
