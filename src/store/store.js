@@ -1,9 +1,10 @@
 import { configureStore, getDefaultMiddleware } from "@reduxjs/toolkit";
 import recipesSlice from "./recipes-slice";
-import logger from "redux-logger"
+import loadingSlice from "./loading-slice";
+import logger from "redux-logger";
 const store = configureStore({
-    reducer: { recipe: recipesSlice.reducer },
-    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger)
-})
+  reducer: { recipe: recipesSlice.reducer, loading: loadingSlice.reducer },
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger),
+});
 
 export default store;

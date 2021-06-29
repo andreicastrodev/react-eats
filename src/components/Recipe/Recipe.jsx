@@ -6,21 +6,28 @@ import styles from "./Recipe.module.css";
 import { useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import { useState } from "react";
-const Recipe = ({ }) => {
+import { useSelector } from "react-redux";
+import Spinner from "../UI/Spinner";
+import { useDispatch } from "react-redux";
+import { loadingActions } from "../../store/loading-slice";
+const Recipe = ({}) => {
   const [recipeData, setRecipeData] = useState(null);
+  const load = useSelector((state) => state.loading.loading.payload);
   const { hash } = useLocation();
-  console.log(hash)
-  const newHash = hash.substring(1)
+  const newHash = hash.substring(1);
+  const dispatch = useDispatch();
   useEffect(() => {
-
     const getRecipeData = async () => {
+      dispatch(loadingActions.setLoading({ payload: true }));
       try {
-        const RES = await fetch(`https://forkify-api.herokuapp.com/api/get?rId=${newHash}`)
+        const RES = await fetch(
+          `https://forkify-api.herokuapp.com/api/get?rId=${newHash}`
+        );
         if (!RES.ok) {
-          throw new Error('Something went wrong');
+          throw new Error("Something went wrong");
         }
         const DATA = await RES.json();
-        const { recipe } = DATA
+        const { recipe } = DATA;
 
         setRecipeData({
           imageUrl: recipe.image_url,
@@ -30,22 +37,20 @@ const Recipe = ({ }) => {
           recipeId: recipe.recipe_id,
           socialRank: recipe.social_rank,
           sourceUrl: recipe.source_url,
-          title: recipe.title
-        })
+          title: recipe.title,
+        });
+        dispatch(loadingActions.setLoading({ payload: false }));
       } catch (error) {
-        console.error(error)
+        console.error(error);
       }
-    }
-    getRecipeData()
-
-  }, [newHash])
-
+    };
+    getRecipeData();
+  }, [newHash]);
 
   let hasData = null;
 
-
   if (recipeData) {
-    hasData =
+    hasData = (
       <div className={styles.recipe}>
         <img className={styles.recipeImg} src={recipeData.imageUrl} alt="" />
         <div className={styles.recipeTitleBlock}>
@@ -64,40 +69,37 @@ const Recipe = ({ }) => {
 
         <div className={styles.recipeIngredients}>
           <ul className={styles.recipeIngredientsList}>
-            {
-              recipeData.ingredients.map(ingridient => (
-                <li className={styles.recipeList}>
-                  <div className={styles.recipeIngredient}>
-                    <span className={styles.recipeUnit}>{ingridient}</span>
-                  </div>
-                </li>
-
-              ))
-            }
+            {recipeData.ingredients.map((ingridient) => (
+              <li className={styles.recipeList}>
+                <div className={styles.recipeIngredient}>
+                  <span className={styles.recipeUnit}>{ingridient}</span>
+                </div>
+              </li>
+            ))}
           </ul>
         </div>
 
         <div className={styles.recipeDirections}>
           <h2 className={styles.recipeTitle1}>How to Cook It</h2>
           <p className={styles.recipeText}>
-            This recipe was carefully designed and tested by {recipeData.publisher}.
-            Please check out directions at their website.
+            This recipe was carefully designed and tested by{" "}
+            {recipeData.publisher}. Please check out directions at their
+            website.
           </p>
           <button className={styles.recipeBtn}>Directions</button>
         </div>
       </div>
+    );
   } else {
-    hasData = <p>Search now for yummu recipes :)</p>
+    hasData = (
+      <p className={styles.recipeMsg}>Search now for yummy recipes :)</p>
+    );
   }
-
 
   return (
     <React.Fragment>
-      {
-        hasData
-      }
+      {load ? <Spinner className={styles.recipeSpinner} /> : hasData }
     </React.Fragment>
-
   );
 };
 

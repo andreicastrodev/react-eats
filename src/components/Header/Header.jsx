@@ -4,43 +4,42 @@ import { ReactComponent as HeaderMode } from "../../misc/svg/mode.svg";
 import { ReactComponent as HeaderBookmark } from "../../misc/svg/bookmark.svg";
 import { useDispatch, useSelector } from "react-redux";
 import { recipesActions } from "../../store/recipes-slice";
-
+import { loadingActions } from "../../store/loading-slice";
 let stopOnStart = true;
 
 const Header = () => {
-
-  const [searchedItem, setSearchedItem] = useState('')
-
-  const image = require("../../misc/img/pasta.jpg").default;
-  const dispatch = useDispatch()
-
-
+  const [searchedItem, setSearchedItem] = useState("");
+  const dispatch = useDispatch();
 
   const formSubmitHandler = (e) => {
-    e.preventDefault()
+    e.preventDefault();
     const getData = async () => {
       try {
-        const RES = await fetch(`https://forkify-api.herokuapp.com/api/search?q=${searchedItem}`)
-        console.log(RES)
+        dispatch(loadingActions.setResultsLoading({ payload: true }));
+
+        const RES = await fetch(
+          `https://forkify-api.herokuapp.com/api/search?q=${searchedItem}`
+        );
+        console.log(RES);
         if (!RES.ok) {
-          throw new Error('Something went wrong')
+          throw new Error("Something went wrong");
         }
         const data = await RES.json();
-        dispatch(recipesActions.addRecipe({ payload: data }))
+        dispatch(recipesActions.addRecipe({ payload: data }));
+        dispatch(loadingActions.setResultsLoading({ payload: false }));
       } catch (error) {
-        console.error(error)
+        console.error(error);
       }
-    }
+    };
 
-    if (stopOnStart) return
-    getData()
-  }
+    if (stopOnStart) return;
+    getData();
+  };
 
   const searchHandler = (e) => {
-    setSearchedItem(e.target.value)
-    stopOnStart = false
-  }
-
+    setSearchedItem(e.target.value);
+    stopOnStart = false;
+  };
 
   return (
     <div className={styles.header}>
@@ -71,7 +70,7 @@ const Header = () => {
               <li className={styles.headerBookmarksPreview}>
                 <a className={styles.headerPreviewLink} href="#">
                   <figure className={styles.headerFigure}>
-                    <img className={styles.headerImg} src={image} alt="" />
+                    {/* <img className={styles.headerImg} src={image} alt="" /> */}
                   </figure>
                   <div className={styles.headerData}>
                     <h4 className={styles.headerDataTitle}>Nigga Pizza</h4>

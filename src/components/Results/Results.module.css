@@ -6,6 +6,7 @@
   /* justify-content: center; */
   padding: 3rem 0;
   overflow: scroll;
+  list-style: none;
 }
 
 .resultsMsg {
@@ -39,6 +40,8 @@
   margin: 1rem;
   padding: 1rem 2rem;
   cursor: pointer;
+  color: black;
+  text-decoration: none;
 }
 
 .resultsBox:hover {

@@ -109,3 +109,11 @@
 .recipeServingSvg {
   height: 5rem;
 }
+
+.recipeMsg {
+  font-size: 2rem;
+  grid-column: col-start 5 / center-end;
+  margin-top: 20rem;
+}
+
+
