@@ -108,8 +108,13 @@
 .recipeTimeSvg,
 .recipeServingSvg {
   height: 5rem;
+  width: 5rem;
+  margin-right: .5rem;
 }
 
+.recipeServingSvg{
+  cursor: pointer;
+}
 .recipeMsg {
   font-size: 2rem;
   grid-column: col-start 5 / center-end;
@@ -117,3 +122,9 @@
 }
 
 
+
+.recipeBookmarkBtn{
+  outline: none;
+  border: none;
+  background-color: transparent;
+}

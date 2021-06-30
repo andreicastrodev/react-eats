@@ -25,13 +25,13 @@
 }
 
 .headerInput {
-  border: none;
   background: none;
   font-family: inherit;
   color: inherit;
   font-size: 1.7rem;
   width: 30rem;
-  outline: none;
+  outline: black;
+  padding: 1rem;
 }
 
 .headerBtn {
@@ -144,4 +144,13 @@
 .headerDataPublisher {
   font-size: 1.3rem;
   color: #918581;
+}
+
+
+.headerRecipeMessage{
+  font-size: 1.6rem;
+  text-transform: uppercase;
+  font-weight: 700;
+  text-align: center;
+  padding: 3rem;
 }

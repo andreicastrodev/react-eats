@@ -9,7 +9,13 @@ let stopOnStart = true;
 
 const Header = () => {
   const [searchedItem, setSearchedItem] = useState("");
+  const bookmarkedItems = useSelector((state) => state.recipe.bookmarks);
+
+  const newBookmarkedItems = bookmarkedItems.map((items) => {
+    return items.payload;
+  });
   const dispatch = useDispatch();
+  console.log(newBookmarkedItems);
 
   const formSubmitHandler = (e) => {
     e.preventDefault();
@@ -67,17 +73,35 @@ const Header = () => {
           </button>
           <div className={styles.headerBookmarks}>
             <ul className={styles.headerBookmarksList}>
-              <li className={styles.headerBookmarksPreview}>
-                <a className={styles.headerPreviewLink} href="#">
-                  <figure className={styles.headerFigure}>
-                    {/* <img className={styles.headerImg} src={image} alt="" /> */}
-                  </figure>
-                  <div className={styles.headerData}>
-                    <h4 className={styles.headerDataTitle}>Nigga Pizza</h4>
-                    <p className={styles.headerDataPublisher}>Da Hoodz</p>
-                  </div>
-                </a>
-              </li>
+              {newBookmarkedItems.length > 0 ? (
+                <li className={styles.headerBookmarksPreview}>
+                  {newBookmarkedItems.map((recipe) => (
+                    <a
+                      className={styles.headerPreviewLink}
+                      href={`#${recipe.recipeId}`}
+                      key={recipe.recipeId}
+                    >
+                      <figure className={styles.headerFigure}>
+                        <img
+                          className={styles.headerImg}
+                          src={recipe.imageUrl}
+                          alt=""
+                        />
+                      </figure>
+                      <div className={styles.headerData}>
+                        <h4 className={styles.headerDataTitle}>
+                          {recipe.title}
+                        </h4>
+                        <p className={styles.headerDataPublisher}>
+                          {recipe.publisher}
+                        </p>
+                      </div>
+                    </a>
+                  ))}
+                </li>
+              ) : (
+                <p className={styles.headerRecipeMessage}>Bookmark a recipe :)</p>
+              )}
             </ul>
           </div>
         </li>

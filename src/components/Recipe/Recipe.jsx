@@ -1,6 +1,7 @@
 import React from "react";
-import { ReactComponent as TimeToCook } from "../../misc/svg/time.svg";
-import { ReactComponent as ServingToCook } from "../../misc/svg/serving.svg";
+import { ReactComponent as Star } from "../../misc/svg/star.svg";
+import { ReactComponent as Bookmark } from "../../misc/svg/bookmark.svg";
+import { ReactComponent as BookmarkFill } from "../../misc/svg/bookmark-fill.svg";
 
 import styles from "./Recipe.module.css";
 import { useLocation } from "react-router-dom";
@@ -10,16 +11,33 @@ import { useSelector } from "react-redux";
 import Spinner from "../UI/Spinner";
 import { useDispatch } from "react-redux";
 import { loadingActions } from "../../store/loading-slice";
+import { recipesActions } from "../../store/recipes-slice";
+let preventRequest = true;
+
 const Recipe = ({}) => {
   const [recipeData, setRecipeData] = useState(null);
   const load = useSelector((state) => state.loading.loading.payload);
   const { hash } = useLocation();
   const newHash = hash.substring(1);
   const dispatch = useDispatch();
+
+  const bookmarkedItems = useSelector((state) => state.recipe.bookmarks);
+
+  const newBookmarkedItems = bookmarkedItems.map((items) => {
+    return items.payload;
+  });
+
+  const bookmarkedItem = newBookmarkedItems.some(
+    (item) => item.recipeId === recipeData.recipeId
+  );
+
+  console.log(bookmarkedItem);
+
   useEffect(() => {
     const getRecipeData = async () => {
-      dispatch(loadingActions.setLoading({ payload: true }));
       try {
+        dispatch(loadingActions.setLoading({ payload: true }));
+
         const RES = await fetch(
           `https://forkify-api.herokuapp.com/api/get?rId=${newHash}`
         );
@@ -44,8 +62,17 @@ const Recipe = ({}) => {
         console.error(error);
       }
     };
+
+    if (preventRequest) {
+      preventRequest = false;
+      return;
+    }
     getRecipeData();
   }, [newHash]);
+
+  const addBookmarkHandler = () => {
+    dispatch(recipesActions.addBookmark({ payload: recipeData }));
+  };
 
   let hasData = null;
 
@@ -58,19 +85,27 @@ const Recipe = ({}) => {
         </div>
         <div className={styles.recipeCookInfo}>
           <div className={styles.recipeTime}>
-            <TimeToCook className={styles.recipeTimeSvg} />
-            <span>75 Minutes</span>
+            <Star className={styles.recipeTimeSvg} />
+            <span>{Math.round(recipeData.socialRank)}</span>
           </div>
           <div className={styles.recipeServing}>
-            <ServingToCook className={styles.recipeServingSvg} />
-            <span>4 Servings</span>
+            <button
+              className={styles.recipeBookmarkBtn}
+              onClick={addBookmarkHandler}
+            >
+              {bookmarkedItem ? (
+                <BookmarkFill className={styles.recipeServingSvg} />
+              ) : (
+                <Bookmark className={styles.recipeServingSvg} />
+              )}
+            </button>
           </div>
         </div>
 
         <div className={styles.recipeIngredients}>
           <ul className={styles.recipeIngredientsList}>
-            {recipeData.ingredients.map((ingridient) => (
-              <li className={styles.recipeList}>
+            {recipeData.ingredients.map((ingridient, i) => (
+              <li className={styles.recipeList} key={i}>
                 <div className={styles.recipeIngredient}>
                   <span className={styles.recipeUnit}>{ingridient}</span>
                 </div>
@@ -96,9 +131,11 @@ const Recipe = ({}) => {
     );
   }
 
+  console.log(recipeData);
+
   return (
     <React.Fragment>
-      {load ? <Spinner className={styles.recipeSpinner} /> : hasData }
+      {load ? <Spinner className={styles.recipeSpinner} /> : hasData}
     </React.Fragment>
   );
 };
