@@ -3,8 +3,8 @@ import styles from "./Header.module.css";
 import { ReactComponent as HeaderMode } from "../../misc/svg/mode.svg";
 import { ReactComponent as HeaderBookmark } from "../../misc/svg/bookmark.svg";
 import { useDispatch, useSelector } from "react-redux";
-import { recipesActions } from "../../store/recipes-slice";
-import { loadingActions } from "../../store/loading-slice";
+
+import { fetchRecipeItemsData } from "../../store/actions";
 let stopOnStart = true;
 
 const Header = () => {
@@ -19,27 +19,9 @@ const Header = () => {
 
   const formSubmitHandler = (e) => {
     e.preventDefault();
-    const getData = async () => {
-      try {
-        dispatch(loadingActions.setResultsLoading({ payload: true }));
-
-        const RES = await fetch(
-          `https://forkify-api.herokuapp.com/api/search?q=${searchedItem}`
-        );
-        console.log(RES);
-        if (!RES.ok) {
-          throw new Error("Something went wrong");
-        }
-        const data = await RES.json();
-        dispatch(recipesActions.addRecipe({ payload: data }));
-        dispatch(loadingActions.setResultsLoading({ payload: false }));
-      } catch (error) {
-        console.error(error);
-      }
-    };
 
     if (stopOnStart) return;
-    getData();
+    dispatch(fetchRecipeItemsData(searchedItem));
   };
 
   const searchHandler = (e) => {
@@ -100,7 +82,9 @@ const Header = () => {
                   ))}
                 </li>
               ) : (
-                <p className={styles.headerRecipeMessage}>Bookmark a recipe :)</p>
+                <p className={styles.headerRecipeMessage}>
+                  Bookmark a recipe :)
+                </p>
               )}
             </ul>
           </div>

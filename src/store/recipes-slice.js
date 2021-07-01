@@ -4,11 +4,15 @@ const recipesSlice = createSlice({
   name: "recipe",
   initialState: {
     items: [],
+    recipe: null,
     bookmarks: [],
   },
   reducers: {
     addRecipe(state, action) {
       state.items = action.payload;
+    },
+    addRecipeIngridients(state, action) {
+      state.recipe = action.payload;
     },
     addBookmark(state, action) {
       let index;

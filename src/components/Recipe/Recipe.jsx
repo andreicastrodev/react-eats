@@ -10,8 +10,8 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import Spinner from "../UI/Spinner";
 import { useDispatch } from "react-redux";
-import { loadingActions } from "../../store/loading-slice";
 import { recipesActions } from "../../store/recipes-slice";
+import { fetchRecipeIngridientData } from "../../store/actions";
 let preventRequest = true;
 
 const Recipe = ({}) => {
@@ -22,7 +22,7 @@ const Recipe = ({}) => {
   const dispatch = useDispatch();
 
   const bookmarkedItems = useSelector((state) => state.recipe.bookmarks);
-
+  const fetchedRecipe = useSelector((state) => state.recipe.recipe);
   const newBookmarkedItems = bookmarkedItems.map((items) => {
     return items.payload;
   });
@@ -31,43 +31,28 @@ const Recipe = ({}) => {
     (item) => item.recipeId === recipeData.recipeId
   );
 
-  console.log(bookmarkedItem);
-
   useEffect(() => {
-    const getRecipeData = async () => {
-      try {
-        dispatch(loadingActions.setLoading({ payload: true }));
-
-        const RES = await fetch(
-          `https://forkify-api.herokuapp.com/api/get?rId=${newHash}`
-        );
-        if (!RES.ok) {
-          throw new Error("Something went wrong");
-        }
-        const DATA = await RES.json();
-        const { recipe } = DATA;
-
-        setRecipeData({
-          imageUrl: recipe.image_url,
-          ingredients: recipe.ingredients,
-          publisher: recipe.publisher,
-          publisherUrl: recipe.publisher_url,
-          recipeId: recipe.recipe_id,
-          socialRank: recipe.social_rank,
-          sourceUrl: recipe.source_url,
-          title: recipe.title,
-        });
-        dispatch(loadingActions.setLoading({ payload: false }));
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
     if (preventRequest) {
       preventRequest = false;
       return;
     }
-    getRecipeData();
+    dispatch(fetchRecipeIngridientData(newHash));
+
+    if (fetchedRecipe === null) {
+      return;
+    }
+
+    const newRecipe = fetchedRecipe.payload;
+    setRecipeData({
+      imageUrl: newRecipe.image_url,
+      ingredients: newRecipe.ingredients,
+      publisher: newRecipe.publisher,
+      publisherUrl: newRecipe.publisher_url,
+      recipeId: newRecipe.recipe_id,
+      socialRank: newRecipe.social_rank,
+      sourceUrl: newRecipe.source_url,
+      title: newRecipe.title,
+    });
   }, [newHash]);
 
   const addBookmarkHandler = () => {
@@ -130,8 +115,6 @@ const Recipe = ({}) => {
       <p className={styles.recipeMsg}>Search now for yummy recipes :)</p>
     );
   }
-
-  console.log(recipeData);
 
   return (
     <React.Fragment>
